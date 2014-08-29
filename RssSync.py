@@ -1,4 +1,13 @@
 #encoding=utf8
+#==========================================================
+#getPages():  根据链接获取网页内容
+#getURLs():  从网页内容中获取新闻的链接
+#getTitles():  从网页内容中获取新闻的标题
+#check_updated():  检查某个新闻分类是否有更新
+#do_update():  更新某个新闻分类的XML文件
+#creat_item():  根据新闻链接和标题创建XML格式的新闻内容节点
+#getNewItems():  根据有更新的内容创建XML格式的新闻节点
+#==========================================================
 import httplib
 import re
 import xml.etree.ElementTree as ET
@@ -29,16 +38,13 @@ def do_update(urls, titles, latest_url, xml_file):
 	root=tree.getroot()
 	channel=root.find('channel')
 	latest_update=latest_url
-	#item_first=root.find('channel').findall('item')[0]
 	for new_item in getNewItems(urls,titles,latest_url):
 		channel.insert(3,create_item(new_item[0],unicode(new_item[1],'utf8')))
 		latest_update=new_item[0]
-		#print new_item[0],new_item[1]#create item and insert
 	tree.write(xml_file)
 	return latest_update
 
 def create_item(url, title):
-	#channel=root.find('channel')
 	element_item = Element('item')
 	element_title = Element('title')
 	element_link = Element('link')
@@ -49,12 +55,10 @@ def create_item(url, title):
 	element_item.insert(0,element_description)
 	element_item.insert(0,element_link)
 	element_item.insert(0,element_title)
-	#channel.insert(3,element_item)
 	return element_item
 
 def getNewItems(urls, titles, latest_url):
 	newItems=[]
-	#urls=urls.reverse()
 	for i in range(len(urls)):
 		if urls[i] == latest_url:
 			break
